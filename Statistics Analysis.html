@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<script type = "text/javascript">
+			var numPlayers;
+			var playerWins;
+			var playerMoney;
+			var numGamesPlayed;
+			function onClickRun()
+			{
+				if(inputIsGood())
+				{
+					let n = document.getElementById("numPlayers").value;
+					initializeGame(n);
+					playNRounds(document.getElementById("numSims").value);
+					logResults();
+				}
+				else{
+					alert("Please enter in valid info");
+				}
+			}
+			
+			function inputIsGood()
+			{
+				if(document.getElementById("numPlayers").value && document.getElementById("numSims").value && document.getElementById("numSims").value <= 10000000)
+				{
+					
+					return true;
+				
+				}
+				return false;
+			}
+			function initializeGame(players)
+			{
+				numGamesPlayed = 0;
+				numPlayers = players;
+				playerWins = [];
+				for(let i = 0; i < numPlayers; i++)
+				{
+					playerWins.push(0);
+				}
+				reset();
+			}
+			
+
+
+			
+			
+			
+			
+			function playNRounds(numRounds)
+			{
+				for(let j = 0; j < numRounds; j++)
+				{
+					simulateRound();
+				}
+			}
+			
+			function logResults()
+			{
+				let htmlStr = "";
+				for(let i = 0; i < playerWins.length; i++)
+				{
+					htmlStr += "<p>Player " + (i+1) + " won " + playerWins[i] + " times => "  + 100 * playerWins[i]/numGamesPlayed + "%</p>\n";
+				}
+				document.getElementById('output').innerHTML = htmlStr;
+				//document.getElementById('output').innerHtml = "<p> hello</p>";
+			}
+			
+			function reset(){
+				playerMoney = [];
+				for(let i = 0; i < numPlayers; i++)
+				{
+					playerMoney.push(10);
+				}
+				
+			}
+			
+			function simulateRound()
+			{
+				for(let i = 0; i < playerMoney.length; i++)
+				{
+					playerMoney[i] += getMoneyOnTurn();
+					if(playerMoney[i] >= 40)
+					{
+						playerWins[i] +=1;
+						numGamesPlayed++;
+						reset();
+						i = -1;
+					}
+				}
+			}
+			
+			function getCard(){
+				return Math.floor(Math.random() * 15) + 1;
+			}
+			
+			function getDieRoll(){
+				return Math.floor(Math.random() * 6) + 1;
+			}
+			
+			function getMoneyOnTurn(){
+				let card = getCard();
+				let die = getDieRoll();
+				if(card % 2 == 0)
+				{
+					if(die % 2 == 0)
+					{
+						return 10;
+					}
+					else 
+					{
+						return 2;
+					}
+				}
+				else
+				{
+					if(die % 2 == 0)
+					{
+						return 2;
+					}
+					else 
+					{
+						return -5;
+					}
+				}
+			}
+		</script>
+		<style>
+			#input {
+				background-color:aquamarine;
+				width: 350px;
+				padding: 10px;
+				border-radius: 10px;
+			}
+			input#numSims {
+				width: 100px;
+			}
+			input {
+				border-radius: 3px;
+				outline: none;
+			}
+			button{
+				border-radius: 5px;
+				width: 50px;
+				transition: .5s width ease-in-out;
+			}
+			button:hover{
+				border-color: green;
+				width: 100px;
+				transition: .5s width ease-in-out;
+			}
+			div{
+				margin-bottom: 20px;
+			}
+
+			#output {
+				width: 350px;
+				background-color:lightskyblue;
+				border-radius: 5px;
+				padding: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Simulation of "A Game of Chance"</h1>
+		<div id = "input">
+			<label>Number of Players <select id = "numPlayers" ><option>1</option><option>2</option><option>3</option><option>4</option></select></label><br><br>
+			<label>Number of Simulations <input type = "text" id = "numSims" /><label><br><br>
+			<button align = "center" onclick = "onClickRun()">Run</button>
+		</div>
+		<div id = "output">
+			<p align = "center">Output will appear here</p>
+		</div>
+	</body>
+</html>
